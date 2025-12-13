@@ -1,0 +1,27 @@
+### ヘルスチェック
+GET http://localhost:8080/ping
+Content-Type: application/json
+
+###
+
+### エージェント呼び出し（Web検索の例）
+POST http://localhost:8080/invocations
+Content-Type: text/plain
+
+GitHubの最新のトレンドリポジトリを教えてください
+
+###
+
+### エージェント呼び出し（簡単な質問）
+POST http://localhost:8080/invocations
+Content-Type: text/plain
+
+今日の天気はどうですか？
+
+###
+
+### エージェント呼び出し（技術情報検索）
+POST http://localhost:8080/invocations
+Content-Type: text/plain
+
+React 19の新機能について教えてください

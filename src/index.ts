@@ -1,1 +1,53 @@
-console.log("Hello via Bun!");
+import { Hono } from 'hono'
+import { serve } from '@hono/node-server'
+import * as strands from '@strands-agents/sdk'
+import { httpRequest } from '@strands-agents/sdk/vended_tools/http_request'
+import { paymentTools } from './tools';
+
+// ポート番号とモデルIDを読み込む
+const PORT = Number(process.env.PORT);
+const MODEL_ID = process.env.MODEL_ID;
+
+// Bedrockを使う設定を行う。
+const bedrock = new strands.BedrockModel({ modelId: MODEL_ID });
+
+// Agentインスタンスを生成
+const agent = new strands.Agent({ 
+  model: bedrock, 
+  systemPrompt: `
+    あなたはユーザーの質問に対してWeb検索を行うAIエージェントです。
+    どんなURLを使ったのかも含めてレスポンスしてください。
+    また、語尾に「Hono!」と付けてください。例えば「了解しましたHono!」のような形です。
+  `, 
+  tools: [httpRequest, paymentTools] 
+})
+
+const app = new Hono()
+
+// ヘルスチェック
+app.get('/ping', (c) =>
+  c.json({
+    status: 'Healthy',
+    time_of_last_update: Math.floor(Date.now() / 1000),
+  })
+)
+
+// エージェント呼び出し
+app.post('/invocations', async (c) => {
+  try {
+    const body = await c.req.arrayBuffer()
+    // リクエストボディからプロンプトを取得
+    const prompt = new TextDecoder().decode(body)
+    // プロンプトを詰めて推論を実行させる
+    const response = await agent.invoke(prompt)
+    return c.json({ response })
+  } catch (err) {
+    console.error('Error processing request:', err)
+    return c.json({ error: 'Internal server error' }, 500)
+  }
+})
+
+// サーバー起動
+serve({ fetch: app.fetch, port: PORT }, () => {
+  console.log(`🚀 AgentCore Runtime server listening on port ${PORT}`)
+})
