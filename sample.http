@@ -16,7 +16,7 @@ GitHubの最新のトレンドリポジトリを教えてください
 POST http://localhost:8080/invocations
 Content-Type: text/plain
 
-今日の天気はどうですか？
+Please tell me my wallet address.
 
 ###
 
@@ -25,3 +25,11 @@ POST http://localhost:8080/invocations
 Content-Type: text/plain
 
 React 19の新機能について教えてください
+
+###
+
+### エージェント呼び出し（Payment MCP）
+POST http://localhost:8080/invocations
+Content-Type: text/plain
+
+USDCで10ドルの請求書を作成してください

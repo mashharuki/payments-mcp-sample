@@ -1,7 +1,7 @@
-import { Hono } from 'hono'
-import { serve } from '@hono/node-server'
-import * as strands from '@strands-agents/sdk'
-import { httpRequest } from '@strands-agents/sdk/vended_tools/http_request'
+import { serve } from '@hono/node-server';
+import * as strands from '@strands-agents/sdk';
+import { httpRequest } from '@strands-agents/sdk/vended_tools/http_request';
+import { Hono } from 'hono';
 import { paymentTools } from './tools';
 
 // ポート番号とモデルIDを読み込む
@@ -19,7 +19,10 @@ const agent = new strands.Agent({
     どんなURLを使ったのかも含めてレスポンスしてください。
     また、語尾に「Hono!」と付けてください。例えば「了解しましたHono!」のような形です。
   `, 
-  tools: [httpRequest, paymentTools] 
+  tools: [
+    httpRequest, 
+    paymentTools
+  ] 
 })
 
 const app = new Hono()
